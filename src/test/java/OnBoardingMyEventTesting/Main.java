@@ -1,4 +1,4 @@
-package OnBoardingEventTesting;
+package OnBoardingMyEventTesting;
 
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -35,7 +35,7 @@ public class Main {
     element2.submit();
     
     //masuk ke halaman on boarding events
-    driver.get("https://orangehrm-demo-6x.orangehrmlive.com/client/#/noncore/onboarding/viewJobs/reset/1");
+    driver.get("https://orangehrm-demo-6x.orangehrmlive.com/client/#/noncore/onboarding/viewMyJobs/reset/1");
     
     
     
