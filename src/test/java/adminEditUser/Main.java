@@ -62,54 +62,103 @@ public class Main {
     String expectedErrorPassword = "Should have at least 8 characters";
     String expectedErrorPasswordDoNotMatch = "Passwords do not match";
     
-    String expectedNoError = "";
+    String actualErrorEmployeeName;
+    String actualErrorUsername;
+    String actualErrorPassword;
+    String actualErrorConfirmPassword;
     
-    //test yang seharusnya tidak error
-    editUser(drpRole, elementNamaKaryawan, elementUsername, drpStatus, elementChangePasswordCheckBox, elementPassword, elementConfirmPassword,
-    		"ESS", "Linda Jane Anderson", "Linda.Anderson", "Disabled", "Abc123!@#", "Abc123!@#");
-    WebElement elementErrorUsername = driver.findElement(By.xpath("//span[@for = 'systemUser_userName']"));
-    WebElement elementErrorPassword = driver.findElement(By.xpath("//span[@for = 'systemUser_password']"));
-    WebElement elementErrorConfirmPassword = driver.findElement(By.xpath("//span[@for = 'systemUser_confirmPassword']"));
-    String expectedCurrentURL = "";
+    //mulai test
+    drpRole.selectByVisibleText("ESS");
+    drpRole.selectByVisibleText("Admin");
     
+    //test nama kosong
+	elementNamaKaryawan.clear();
+	elementNamaKaryawan.sendKeys("a");
+	elementNamaKaryawan.clear();
+	actualErrorEmployeeName = driver.findElement(By.xpath("//span[@for = 'systemUser_employeeName_empName']")).getText();
+	Assert.assertEquals(expectedtErrorEmptyText, actualErrorEmployeeName, "Seharusnya muncul Error Required");
+	
+	//test nama tidak ada dalam list
+	elementNamaKaryawan.sendKeys("a");
+	actualErrorEmployeeName = driver.findElement(By.xpath("//span[@for = 'systemUser_employeeName_empName']")).getText();
+	Assert.assertEquals(expectedErrorMsgName, actualErrorEmployeeName, "Seharusnya muncul Error Employee does not exist");
+	
+	//memasukkan nama yang benar
+	elementNamaKaryawan.clear();
+	elementNamaKaryawan.sendKeys("Linda Jane Anderson");
+	
+	//test username kosong
+	elementUsername.clear();
+	elementUsername.sendKeys("a");
+	elementUsername.clear();
+	actualErrorUsername = driver.findElement(By.xpath("//span[@for = 'systemUser_userName']")).getText();
+	Assert.assertEquals(expectedtErrorEmptyText, actualErrorUsername, "Seharusnya muncul Error Required");
+	
+	//test username kurang dari 5 karakter
+	elementUsername.sendKeys("a");
+	actualErrorUsername = driver.findElement(By.xpath("//span[@for = 'systemUser_userName']")).getText();
+	Assert.assertEquals(expectedErrorMsgUsername, actualErrorUsername, "Seharusnya muncul Error Should have at least 5 characters");
+	
+	//memasukkan username yang benar
+	elementUsername.clear();
+	elementUsername.sendKeys("Linda.Anderson");
+	
+	drpStatus.selectByVisibleText("Disabled");
+	drpStatus.selectByVisibleText("Enabled");
+
+	elementChangePasswordCheckBox.click();
+	
+	//test password kosong
+	elementPassword.sendKeys("a");
+	elementPassword.clear();
+	actualErrorPassword = driver.findElement(By.xpath("//span[@for = 'systemUser_password']")).getText();
+	Assert.assertEquals(expectedtErrorEmptyText, actualErrorPassword, "Seharusnya muncul Error Required");
+	
+	//test password kurang dari 8 karakter
+	elementPassword.clear();
+	elementPassword.sendKeys("a");
+	actualErrorPassword = driver.findElement(By.xpath("//span[@for = 'systemUser_password']")).getText();
+	Assert.assertEquals(expectedErrorPassword, actualErrorPassword, "Seharusnya muncul Error");
+	
+	//memasukkan password yang benar
+	elementPassword.clear();
+	elementPassword.sendKeys("Abc123!@#");
+	
+	//test konfirmasi password kosong/tidak sama
+	elementConfirmPassword.sendKeys("a");
+	elementConfirmPassword.clear();	
+	actualErrorConfirmPassword = driver.findElement(By.xpath("//span[@for = 'systemUser_confirmPassword']")).getText();
+	Assert.assertEquals(expectedErrorPasswordDoNotMatch, actualErrorConfirmPassword, "Seharusnya muncul Error");
+	
+	//memasukkan konfirmasi password yang benar/sama
+	elementConfirmPassword.clear();
+	elementConfirmPassword.sendKeys("Abc123!@#");
+	
+	//test apakah semua sudah benar/dapat disimpan editannya
+	element = driver.findElement(By.id("btnSave"));
+	element.click();
+    String expectedCurrentURL = "https://opensource-demo.orangehrmlive.com/index.php/admin/saveSystemUser?userId=5";
     String actualCurrentURL = driver.getCurrentUrl();
-    String actualErrorEmployeeName = driver.findElement(By.xpath("//span[@for = 'systemUser_employeeName_empName']")).getText();
-    String actualErrorUsername = driver.findElement(By.xpath("//span[@for = 'systemUser_userName']")).getText();
-    String actualErrorPassword = driver.findElement(By.xpath("//span[@for = 'systemUser_password']")).getText();
-    String actualErrorConfirmPassword = driver.findElement(By.xpath("//span[@for = 'systemUser_confirmPassword']")).getText();
+    Assert.assertEquals(expectedCurrentURL, actualCurrentURL, "Test masih salah");	
     
-    
-//    Assert.assertEquals(expectedNoError, actualErrorEmployeeName, "Test edit nama belum benar");
-//    Assert.assertTrue(!elementErrorUsername.isDisplayed(), "Test edit username belum benar");
-//    Assert.assertTrue(!elementErrorPassword.isDisplayed(), "Test edit password belum benar");
-//    Assert.assertTrue(!elementErrorConfirmPassword.isDisplayed(), "Test edit password belum benar");
-//    Assert.assertEquals(expectedNoError, actualErrorPassword, "Test edit password belum benar");
-//    Assert.assertEquals(expectedNoError, actualErrorConfirmPassword, "Test edit password belum benar");
-    driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
-    
-    //test yang seharusnya error karena kosong di hampir semua field
-    
-    
-    
-    System.out.println("Selesai?");
+    System.out.println("Selesai");
     
     
   }
   
-  public static void editUser(Select drpRole, WebElement elementNamaKaryawan, WebElement elementUsername, Select drpStatus, WebElement elementChangePasswordCheckBox, WebElement elementPassword, WebElement elementConfirmPassword, 
-		  String role, String namaKaryawan, String username, String status, String password, String confirmPassword) {
-	  drpRole.selectByVisibleText(role);
-	  elementNamaKaryawan.clear();
-	  elementNamaKaryawan.sendKeys(namaKaryawan);
-	  elementUsername.clear();
-	  elementUsername.sendKeys(username);
-	  drpStatus.selectByVisibleText(status);
-	  elementChangePasswordCheckBox.click();
-	  elementPassword.clear();
-	  elementPassword.sendKeys(password);
-	  elementConfirmPassword.clear();
-	  elementConfirmPassword.sendKeys(confirmPassword);
-	  elementConfirmPassword.submit();
-  }
+//  public static void editUser(Select drpRole, WebElement elementNamaKaryawan, WebElement elementUsername, Select drpStatus, WebElement elementChangePasswordCheckBox, WebElement elementPassword, WebElement elementConfirmPassword, 
+//		  String role, String namaKaryawan, String username, String status, String password, String confirmPassword) {
+//	  drpRole.selectByVisibleText(role);
+//	  elementNamaKaryawan.clear();
+//	  elementNamaKaryawan.sendKeys(namaKaryawan);
+//	  elementUsername.clear();
+//	  elementUsername.sendKeys(username);
+//	  drpStatus.selectByVisibleText(status);
+//	  elementChangePasswordCheckBox.click();
+//	  elementPassword.clear();
+//	  elementPassword.sendKeys(password);
+//	  elementConfirmPassword.clear();
+//	  elementConfirmPassword.sendKeys(confirmPassword);
+//  }
 
 }
