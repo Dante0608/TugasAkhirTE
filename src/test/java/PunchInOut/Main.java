@@ -55,12 +55,152 @@ public class Main {
     //memasukkan tanggal yang benar
     elementDatePunchIn.clear();
     elementDatePunchIn.sendKeys("2021-06-02");
+    WebElement elementTempatSembarang = driver.findElement(By.xpath("//label[@for = 'attendance_note']"));
+    elementTempatSembarang.click();
     
     //test jam masuk salah
     WebElement elementTimePunchIn = driver.findElement(By.id("attendance_time"));
+    elementTimePunchIn.clear();
+    elementTimePunchIn.sendKeys("25:61");
+    elementTimePunchIn.clear();
+    String expectedErrorTime = "Should Be a Valid Time in HH:MM Format";
+    String actualErrorTime = driver.findElement(By.id("timeErrorHolder")).getText();
+    Assert.assertEquals(expectedErrorTime, actualErrorTime, "Seharusnya muncul Error");
     
+    //memasukkan jam yang benar
+    elementTimePunchIn.clear();
+    elementTimePunchIn.sendKeys("08:00");
     
-    System.out.println("Selesai?");
+    //memasukkan note
+    WebElement elementNotePunchIn = driver.findElement(By.id("attendance_note"));
+    elementNotePunchIn.sendKeys("Masuk Pertama, percobaan pertama");
+    
+    //melakukan punch in
+    WebElement elementSavePunch = driver.findElement(By.id("btnPunch"));
+    elementSavePunch.click();
+    String expectedCurrentURL = "https://opensource-demo.orangehrmlive.com/index.php/attendance/punchOut";
+    String actualCurrentURL = driver.getCurrentUrl();
+    Assert.assertEquals(expectedCurrentURL, actualCurrentURL, "Punch In belum berhasil/masih salah");
+    
+    //test tanggal keluar salah kosong/salah format (punch out)
+    WebElement elementDatePunchOut = driver.findElement(By.id("attendance_date"));
+    elementDatePunchOut.clear();
+    elementDatePunchOut.sendKeys("11111");
+    String expectedErrorDatePO = "Should Be a Valid Date in yy-mm-dd Format";
+    String actualErrorDatePO = driver.findElement(By.id("dateErrorHolder")).getText();
+    Assert.assertEquals(expectedErrorDatePO, actualErrorDatePO, "Seharusnya muncul Error");
+    
+    //test tanggal keluar kurang dari tanggal masuk
+    elementDatePunchOut.clear();
+    elementDatePunchOut.sendKeys("2021-06-01");
+    elementTempatSembarang = driver.findElement(By.xpath("//label[@for = 'attendance_note']"));
+    elementTempatSembarang.click();
+    String expectedErrorDatePO2 = "Punch out Time Should Be Higher Than Punch in Time";
+    String actualErrorDatePO2 = driver.findElement(By.id("timeErrorHolder")).getText();
+    Assert.assertEquals(expectedErrorDatePO2, actualErrorDatePO2, "Seharusnya muncul Error");
+    
+    //memasukkan tanggal yang benar
+    elementDatePunchOut.clear();
+    elementDatePunchOut.sendKeys("2021-06-02");
+    elementTempatSembarang.click();
+    
+    //test jam keluar salah format
+    WebElement elementTimePunchOut = driver.findElement(By.id("attendance_time"));
+    elementTimePunchOut.clear();
+    elementTimePunchOut.sendKeys("1");
+    String expectedErrorTimePO = "Should Be a Valid Time in HH:MM Format";
+    String actualErrorTimePO = driver.findElement(By.id("timeErrorHolder")).getText();
+    Assert.assertEquals(expectedErrorTimePO, actualErrorTimePO, "Seharusnya muncul Error");
+    
+    //test jam keluar kurang dari waktu masuk
+    elementTimePunchOut.clear();
+    elementTimePunchOut.sendKeys("07:00");
+    elementTempatSembarang.click();
+    String expectedErrorTimePO2 = "Punch out Time Should Be Higher Than Punch in Time";
+    String actualErrorTimePO2 = driver.findElement(By.id("timeErrorHolder")).getText();
+    Assert.assertEquals(expectedErrorTimePO2, actualErrorTimePO2, "Seharusnya muncul Error");
+    
+    //memasukkan jam yang benar
+    elementTimePunchOut.clear();
+    elementTimePunchOut.sendKeys("09:00");
+    elementTempatSembarang.click();
+    
+    //memasukkan note punch out
+    WebElement elementNotePunchOut = driver.findElement(By.id("attendance_note"));
+    elementNotePunchOut.sendKeys("Keluar Pertama, percobaan pertama");
+    
+    //melakukan punch out
+    WebElement elementSavePunchOut = driver.findElement(By.id("btnPunch"));
+    elementSavePunchOut.click();
+    expectedCurrentURL = "https://opensource-demo.orangehrmlive.com/index.php/attendance/punchIn";
+    actualCurrentURL = driver.getCurrentUrl();
+    Assert.assertEquals(expectedCurrentURL, actualCurrentURL, "Punch Out belum berhasil/masih salah");
+    
+    //test punch in kedua kalinya
+    elementDatePunchIn = driver.findElement(By.id("attendance_date"));
+    elementDatePunchIn.clear();
+    elementTempatSembarang = driver.findElement(By.xpath("//label[@for = 'attendance_note']"));
+    elementTempatSembarang.click();
+    elementDatePunchIn = driver.findElement(By.id("attendance_date"));
+    elementDatePunchIn.sendKeys("2021-06-02");
+    elementTempatSembarang.click();
+    
+    //memasukkan jam/waktu di antara jam punch in-out yang pertama
+    elementTimePunchIn = driver.findElement(By.id("attendance_time"));
+    elementTimePunchIn.clear();
+    elementTimePunchIn.sendKeys("08:10");
+    elementTempatSembarang.click();
+    expectedErrorTime = "Overlapping Records Found";
+    actualErrorTime = driver.findElement(By.id("timeErrorHolder")).getText();
+    Assert.assertEquals(expectedErrorTime, actualErrorTime, "Seharusnya muncul Error");
+    
+    //memasukkan jam/waktu yang benar (tidak di antara jam punch in-out yang pertama)
+    elementTimePunchIn.clear();
+    elementTimePunchIn.sendKeys("10:00");
+    elementTempatSembarang.click();
+    
+    //mengikuti alur sampai selesai
+    elementNotePunchIn = driver.findElement(By.id("attendance_note"));
+    elementNotePunchIn.clear();
+    elementNotePunchIn.sendKeys("Masuk Kedua, percobaan kedua");
+    
+    elementSavePunch = driver.findElement(By.id("btnPunch"));
+    elementSavePunch.click();
+    
+//    elementDatePunchOut = driver.findElement(By.id("attendance_date"));
+//    elementDatePunchOut.clear();
+//    elementDatePunchOut.sendKeys("2021-06-02");
+    elementTempatSembarang = driver.findElement(By.xpath("//label[@for = 'attendance_note']"));
+    elementTempatSembarang.click();
+    
+    elementTimePunchOut = driver.findElement(By.id("attendance_time"));
+    elementTimePunchOut.clear();
+    elementTimePunchOut.sendKeys("11:00");
+    elementTempatSembarang.click();
+    
+    elementTimePunchOut.clear();
+    elementTimePunchOut.sendKeys("11:00");
+    elementTempatSembarang.click();
+    
+    elementNotePunchOut = driver.findElement(By.id("attendance_note"));
+    elementNotePunchOut.sendKeys("Keluar Kedua, percobaan kedua");
+    
+    elementSavePunchOut = driver.findElement(By.id("btnPunch"));
+    elementSavePunchOut.click();
+    
+    expectedCurrentURL = "https://opensource-demo.orangehrmlive.com/index.php/attendance/punchIn";
+    actualCurrentURL = driver.getCurrentUrl();
+    Assert.assertEquals(expectedCurrentURL, actualCurrentURL, "Punch Out belum berhasil/masih salah");
+
+    driver.get("https://opensource-demo.orangehrmlive.com/index.php/attendance/viewMyAttendanceRecord");
+    WebElement elementPilihTanggal = driver.findElement(By.id("attendance_date"));
+    elementPilihTanggal.clear();
+    elementPilihTanggal.sendKeys("2021-06-02");
+    elementTempatSembarang = driver.findElement(By.xpath("//label[@for = 'attendance_date']"));
+    elementTempatSembarang.click();
+    elementTempatSembarang.click();
+    
+    System.out.println("Selesai");
   }
 
 }
