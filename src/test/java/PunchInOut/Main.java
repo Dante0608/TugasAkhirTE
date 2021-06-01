@@ -1,13 +1,20 @@
 package PunchInOut;
 
+import java.awt.List;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
+
+import java.time.LocalDate;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.testng.Assert;
 
 public class Main {
 
@@ -37,9 +44,23 @@ public class Main {
     //masuk ke halaman on boarding events
     driver.get("https://opensource-demo.orangehrmlive.com/index.php/attendance/punchIn#");
     
+    //test tanggal masuk salah kosong/salah format
+    WebElement elementDatePunchIn = driver.findElement(By.id("attendance_date"));
+    elementDatePunchIn.clear();
+    elementDatePunchIn.sendKeys("11111");
+    String expectedErrorDate = "Should Be a Valid Date in yy-mm-dd Format";
+    String actualErrorDate = driver.findElement(By.id("dateErrorHolder")).getText();
+    Assert.assertEquals(expectedErrorDate, actualErrorDate, "Seharusnya muncul Error");
+    
+    //memasukkan tanggal yang benar
+    elementDatePunchIn.clear();
+    elementDatePunchIn.sendKeys("2021-06-02");
+    
+    //test jam masuk salah
+    WebElement elementTimePunchIn = driver.findElement(By.id("attendance_time"));
     
     
-    
+    System.out.println("Selesai?");
   }
 
 }
