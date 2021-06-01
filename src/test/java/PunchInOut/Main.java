@@ -1,4 +1,4 @@
-package OnBoardingMyEventTesting;
+package PunchInOut;
 
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -23,7 +23,7 @@ public class Main {
     driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
     
     //masuk ke halaman login
-    driver.get("https://orangehrm-demo-6x.orangehrmlive.com/");
+    driver.get("https://opensource-demo.orangehrmlive.com/index.php/auth/login");
     
     //login lalu masuk ke dashboard
     WebElement element = driver.findElement(By.xpath("//*[@id = 'txtUsername']"));
@@ -35,7 +35,7 @@ public class Main {
     element2.submit();
     
     //masuk ke halaman on boarding events
-    driver.get("https://orangehrm-demo-6x.orangehrmlive.com/client/#/noncore/onboarding/viewMyJobs/reset/1");
+    driver.get("https://opensource-demo.orangehrmlive.com/index.php/attendance/punchIn#");
     
     
     
